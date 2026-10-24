@@ -138,14 +138,8 @@ class TavoloRepository {
 
   Future<bool?> pingOccupazione(int idTavolo, int idUtente) async {
     try {
-      final righe = await _db
-          .from('occupazione')
-          .update({'ultimo_ping': DateTime.now().toLocal().toIso8601String()})
-          .eq('id_tavolo', idTavolo)
-          .eq('id_utente', idUtente)
-          .isFilter('data_liberazione', null)
-          .select('id');
-      return righe.isNotEmpty;
+      await _db.rpc('ping_occupazione', params: {'p_tavolo': idTavolo, 'p_utente': idUtente});
+
     } catch (e) {
       debugPrint('DB_ERROR Errore ping occupazione: $e');
       return null;
